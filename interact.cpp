@@ -184,8 +184,14 @@ bool check_word(char word[], const char* word_reference)
 void paskhalka()
 {
     printf("Вы дошли до пасхалки, поздравляю!\n");
-    printf("Пасхалка через 3 секунды\n\n");
-    sleep(3);
+    printf("Пасхалка через: \n");
+    printf("3 секунды\n");
+    sleep(1);
+    printf("2 секунды\n");
+    sleep(1);
+    printf("1 секунду\n");
+    sleep(1);
+    printf("\n");
     printf("     6                77777777     \n");
     printf("    6                       7      \n");
     printf("   6                       7       \n");

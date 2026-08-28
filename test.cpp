@@ -183,6 +183,7 @@ int run_tests_from_file()
 {
     int mistakes = 0;
     FILE *args = fopen("args.txt", "r");
+
     printf("Тест из файла:\n");
     if (args != NULL)
     {
@@ -194,17 +195,22 @@ int run_tests_from_file()
         }
         TEST_ARGS tests[number_of_args];
         rewind(args);
+
         for (int i = 0; i < number_of_args; ++i)
         {
-            fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1], &tests[i].coefficients[2],
-            &tests[i].number_of_roots_reference, &tests[i].x1_reference, &tests[i].x2_reference);
+            fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1],
+                                                   &tests[i].coefficients[2], &tests[i].number_of_roots_reference,
+                                                   &tests[i].x1_reference, &tests[i].x2_reference);
             mistakes += run_one_test(tests[i]);
         }
+
         if (fclose(args) == 0)
             return mistakes;
+
         printf(RED "Ошибка закрытия файла\n" NO_COLOR);
         return FILE_CLOSING_ERROR;
     }
+
     printf(RED "Ошибка открытия файла\n" NO_COLOR);
     return FILE_OPENING_ERROR;
 }
@@ -213,9 +219,21 @@ void print_mistake_message(TEST_ARGS test, int number_of_roots, double x1, doubl
 {
     printf(RED "Тест не пройден: a = %lf, b = %lf, c = %lf\n",
                                  test.coefficients[2], test.coefficients[1], test.coefficients[0]);
-    printf(GREEN "Требуемое значение: %d корней, x1 = %lf, x2 = %lf\n",
+    if (test.number_of_roots_reference == TWO_SIMILAR_ROOTS)
+        printf(GREEN "Требуемое значение: 2 одинаковых корня, x1 = %lf, x2 = %lf\n",
+                                 test.x1_reference, test.x2_reference);
+    else if (test.number_of_roots_reference == INF_ROOTS)
+        printf(GREEN "Требуемое значение: бесконечно много корней, x1 = %lf, x2 = %lf\n",
+                                 test.x1_reference, test.x2_reference);
+    else
+        printf(GREEN "Требуемое значение: %d корней, x1 = %lf, x2 = %lf\n",
                                  test.number_of_roots_reference, test.x1_reference, test.x2_reference);
-    printf(RED "Получено:           %d корней, x1 = %lf, x2 = %lf\n", number_of_roots, x1, x2);
+    if (number_of_roots == TWO_SIMILAR_ROOTS)
+        printf(RED "Получено:           2 одинаковых корня, x1 = %lf, x2 = %lf\n", x1, x2);
+    else if (number_of_roots == INF_ROOTS)
+        printf(RED "Получено:           бесконечно много корней, x1 = %lf, x2 = %lf\n", x1, x2);
+    else
+        printf(RED "Получено:           %d корней, x1 = %lf, x2 = %lf\n", number_of_roots, x1, x2);
     printf(NO_COLOR);
 }
 
@@ -252,7 +270,7 @@ bool check_for_equation(TEST_ARGS test, int number_of_roots, double x1, double x
     return false;
 }
 
-bool is_same(double x, double x_reference) //подумай как уменьшить колво ифов
+bool is_same(double x, double x_reference)
 {
     if (isfinite(x_reference))
     {
@@ -291,7 +309,7 @@ int run_randomized_test()
 bool iteration_for_square_equation()
 {
     TEST_ARGS test = {.x1_reference = new_rand(), .x2_reference = new_rand()};
-    double x1, x2 = 0.0;
+    double x1 = NAN, x2 = NAN;
     sort_roots(&test.x1_reference, &test.x2_reference);
     test.coefficients[2] = new_rand_without_zero();
     test.number_of_roots_reference = restore_coefficients(test.coefficients, test.x1_reference, test.x2_reference);
@@ -301,7 +319,7 @@ bool iteration_for_square_equation()
 bool iteration_for_linear_equation()
 {
     TEST_ARGS test = {.number_of_roots_reference = ONE_ROOT, .x2_reference = NAN};
-    double x1, x2 = 0.0;
+    double x1 = NAN, x2 = NAN;
     test.coefficients[0] = new_rand();
     test.coefficients[1] = new_rand_without_zero();
     test.coefficients[2] = 0.0;
@@ -312,7 +330,7 @@ bool iteration_for_linear_equation()
 bool iteration_for_equation_with_no_roots()
 {
     TEST_ARGS test = {.number_of_roots_reference = NO_ROOTS, .x1_reference = NAN, .x2_reference = NAN};
-    double x1, x2 = 0.0;
+    double x1 = NAN, x2 = NAN;
     test.coefficients[0] = new_rand_without_zero();
     test.coefficients[1] = 0.0;
     test.coefficients[2] = 0.0;
