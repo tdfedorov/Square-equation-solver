@@ -43,8 +43,8 @@ const int NUMBER_OF_ATTEMPTS = 10;
 enum FILE_ERRORS
 {
     FILE_OPENING_ERROR = -1, ///< Константа, используемая при ошибке открытия файла
-    FILE_CLOSING_ERROR = -1, ///< Константа, используемая при ошибке закрытия файла
-    FILE_READING_ERROR = -1 ///< Константа, используемая при ошибка чтения файла
+    FILE_CLOSING_ERROR = -2, ///< Константа, используемая при ошибке закрытия файла
+    FILE_READING_ERROR = -3 ///< Константа, используемая при ошибка чтения файла
 };
 
 
@@ -139,7 +139,6 @@ bool iteration_for_linear_equation();
 */
 bool iteration_for_equation_with_no_roots();
 
-
 void run_tests()
 {
     int number_of_mistakes = run_randomized_test() + run_determined_tests();
@@ -203,17 +202,18 @@ int run_tests_from_file()
             if (fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1],
                                                    &tests[i].coefficients[2], &tests[i].number_of_roots_reference,
                                                    &tests[i].x1_reference, &tests[i].x2_reference) != 6)
+            {
+                printf("Ошибка чтения файла\n");
                 return FILE_READING_ERROR;
+            }
             mistakes += run_one_test(tests[i]);
         }
 
         if (fclose(args) == 0)
             return mistakes;
-
         printf(RED "Ошибка закрытия файла\n" NO_COLOR);
         return FILE_CLOSING_ERROR;
     }
-
     printf(RED "Ошибка открытия файла\n" NO_COLOR);
     return FILE_OPENING_ERROR;
 }
@@ -222,21 +222,29 @@ void print_mistake_message(TEST_ARGS test, int number_of_roots, double x1, doubl
 {
     printf(RED "Тест не пройден: a = %lf, b = %lf, c = %lf\n",
                                  test.coefficients[2], test.coefficients[1], test.coefficients[0]);
+
+    printf(GREEN "Требуемое значение: ");
+
     if (test.number_of_roots_reference == TWO_SIMILAR_ROOTS)
-        printf(GREEN "Требуемое значение: 2 одинаковых корня, x1 = %lf, x2 = %lf\n",
-                                 test.x1_reference, test.x2_reference);
+        printf("2 одинаковых корня, ");
     else if (test.number_of_roots_reference == INF_ROOTS)
-        printf(GREEN "Требуемое значение: бесконечно много корней, x1 = %lf, x2 = %lf\n",
-                                 test.x1_reference, test.x2_reference);
+        printf("бесконечно много корней, ");
     else
-        printf(GREEN "Требуемое значение: %d корней, x1 = %lf, x2 = %lf\n",
-                                 test.number_of_roots_reference, test.x1_reference, test.x2_reference);
+        printf("%d корней, ", test.number_of_roots_reference);
+
+    printf("x1 = %lf, x2 = %lf\n",  test.x1_reference, test.x2_reference);
+
+    printf(RED "Получено:           ");
+
     if (number_of_roots == TWO_SIMILAR_ROOTS)
-        printf(RED "Получено:           2 одинаковых корня, x1 = %lf, x2 = %lf\n", x1, x2);
+        printf("2 одинаковых корня, ");
     else if (number_of_roots == INF_ROOTS)
-        printf(RED "Получено:           бесконечно много корней, x1 = %lf, x2 = %lf\n", x1, x2);
+        printf("бесконечно много корней, ");
     else
-        printf(RED "Получено:           %d корней, x1 = %lf, x2 = %lf\n", number_of_roots, x1, x2);
+        printf("%d корней, ", number_of_roots);
+
+    printf("x1 = %lf, x2 = %lf\n", x1, x2);
+
     printf(NO_COLOR);
 }
 
