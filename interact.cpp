@@ -55,7 +55,10 @@ bool is_run_new_input();
 */
 bool check_word(char word[], const char* word_reference);
 
-void pashalka();
+/**
+Данная функция вызывает пасхалку
+*/
+void paskhalka();
 
 void run_interact()
 {
@@ -87,6 +90,7 @@ void make_input(double *coefficients)
                                             coefficients + 2, coefficients + 1, coefficients + 0, &check);
         if (number_of_nice_coefficients != 4 || (check != '\n' && check != EOF)
         || !isfinite(*(coefficients + 2)) || !isfinite(*(coefficients + 1)) || !isfinite(*(coefficients + 0)))
+
         {
             printf("Некорректный ввод, повторите запрос\n");
             if (check != '\n' && check != EOF)
@@ -94,7 +98,7 @@ void make_input(double *coefficients)
             if (++number_of_attempts_to_get_pashalka < SIX_SEVEN)
                 printf("До пасхалки %d некорректных вводов\n", SIX_SEVEN - number_of_attempts_to_get_pashalka);
             else if (number_of_attempts_to_get_pashalka == SIX_SEVEN)
-                pashalka();
+                paskhalka();
             else
                 printf("Вы уже видели пасхалку!\n");
         }
@@ -177,14 +181,18 @@ bool check_word(char word[], const char* word_reference)
 }
 
 
-void pashalka()
+void paskhalka()
 {
     printf("Вы дошли до пасхалки, поздравляю!\n");
-    printf("Пасхалка через 3 секунды\n");
+    printf("Пасхалка через 3 секунды\n\n");
     sleep(3);
-    for (int i = 0; i < SIX_SEVEN * SIX_SEVEN; ++i)
-    {
-        printf("67");
-    }
-    printf("\n");
+    printf("     6                77777777     \n");
+    printf("    6                       7      \n");
+    printf("   6                       7       \n");
+    printf("  6                       7        \n");
+    printf("   6666666               7         \n");
+    printf("  6       6             7          \n");
+    printf("  6       6            7           \n");
+    printf("  6       6           7            \n");
+    printf("   6666666           7             \n\n");
 }
