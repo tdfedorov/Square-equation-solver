@@ -64,7 +64,7 @@ int choose_type_of_working(int number_of_terminal_args, char word[])
 int run_not_terminal_input()
 {
     char word[MAX_SIZE_OF_WORD] = {};
-    printf("Данная программа позволяет вычислить корни уравнения второй степени.\n"); // уравнение вида a * x^2 + b * x + c = 0
+    printf("Данная программа позволяет вычислить корни уравнения второй степени.\n");
 
     while (true)
     {
