@@ -39,11 +39,14 @@ const int AMOUNT_OF_ITERATIONS_WITH_NO_ROOTS = 100;
 /// Количество попыток генерации ненулевых чисел для функции new_rand_without_zero
 const int NUMBER_OF_ATTEMPTS = 10;
 
-/// Константа, используемая при ошибке открытия файла
-const int FILE_OPENING_ERROR = -1;
+/// Здесь описаны константы, используемые при наличии ошибок, связанных с файлом
+enum FILE_ERRORS
+{
+    FILE_OPENING_ERROR = -1, ///< Константа, используемая при ошибке открытия файла
+    FILE_CLOSING_ERROR = -1, ///< Константа, используемая при ошибке закрытия файла
+    FILE_READING_ERROR = -1 ///< Константа, используемая при ошибка чтения файла
+};
 
-/// Константа, используемая при ошибке закрытия файла
-const int FILE_CLOSING_ERROR = -1;
 
 /**
 Данная функция запускает функции run_randomized_test, run_determined_tests и run_tests_from_file и печатает общее число ошибок
@@ -183,7 +186,6 @@ int run_tests_from_file()
 {
     int mistakes = 0;
     FILE *args = fopen("args.txt", "r");
-
     printf("Тест из файла:\n");
     if (args != NULL)
     {
@@ -198,9 +200,10 @@ int run_tests_from_file()
 
         for (int i = 0; i < number_of_args; ++i)
         {
-            fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1],
+            if (fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1],
                                                    &tests[i].coefficients[2], &tests[i].number_of_roots_reference,
-                                                   &tests[i].x1_reference, &tests[i].x2_reference);
+                                                   &tests[i].x1_reference, &tests[i].x2_reference) != 6)
+                return FILE_READING_ERROR;
             mistakes += run_one_test(tests[i]);
         }
 
