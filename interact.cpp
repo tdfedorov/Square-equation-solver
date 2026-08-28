@@ -13,7 +13,7 @@ const char* YES = "YES";
 const char* NO = "NO";
 
 /// ДЛЯ ПАСХАЛКИ
-const int SIX_SEVEN = 67;
+const int SIX_SEVEN = 6;
 
 /**
 Данная функция запускает цикл ввода коэффициентов.
@@ -56,6 +56,12 @@ bool is_run_new_input();
 bool check_word(char word[], const char* word_reference);
 
 /**
+Данная функция позволяет делать посимвольный вывод.
+*/
+void printf_with_delay(const char* word);
+
+
+/**
 Данная функция вызывает пасхалку
 */
 void paskhalka();
@@ -83,8 +89,8 @@ void make_input(double *coefficients)
     while (number_of_nice_coefficients != 4 || (check != '\n' && check != EOF)
     || !isfinite(*(coefficients + 2)) || !isfinite(*(coefficients + 1)) || !isfinite(*(coefficients + 0)))
     {
-        printf("Введите коэффициенты квадратного уравнения через пробел.\n");
-        printf("Коэффициенты должны быть целыми числами или десятичными дробями:\n");
+        printf_with_delay("Введите коэффициенты квадратного уравнения через пробел.\n");
+        printf_with_delay("Коэффициенты должны быть целыми числами или десятичными дробями:\n");
 
         number_of_nice_coefficients = scanf("%lf %lf %lf%c",
                                             coefficients + 2, coefficients + 1, coefficients + 0, &check);
@@ -92,7 +98,7 @@ void make_input(double *coefficients)
         || !isfinite(*(coefficients + 2)) || !isfinite(*(coefficients + 1)) || !isfinite(*(coefficients + 0)))
 
         {
-            printf("Некорректный ввод, повторите запрос\n");
+            printf_with_delay("Некорректный ввод, повторите запрос\n");
             if (check != '\n' && check != EOF)
                 clean_stdin();
             if (++number_of_attempts_to_get_pashalka < SIX_SEVEN)
@@ -141,7 +147,7 @@ bool is_run_new_input()
     int check_end_of_file = 0;
     while (true)
     {
-        printf("Для продолжения работы программы введите YES, для выхода введите NO\n");
+        printf_with_delay("Для продолжения работы программы введите YES, для выхода введите NO\n");
         char check = '0';
         check_end_of_file = scanf("%s%c", word, &check);
         if (check_word(word, YES) && (check == '\n' || check == EOF))
@@ -158,7 +164,7 @@ bool is_run_new_input()
         }
         else
         {
-            printf("Некорректный ввод, выберите одно из двух значений\n");
+            printf_with_delay("Некорректный ввод, выберите одно из двух значений\n");
             if (check != '\n' && check != EOF)
                 clean_stdin();
         }
@@ -192,13 +198,24 @@ void paskhalka()
     printf("1 секунду\n");
     sleep(1);
     printf("\n");
-    printf("     6                77777777     \n");
-    printf("    6                       7      \n");
-    printf("   6                       7       \n");
-    printf("  6                       7        \n");
-    printf("   6666666               7         \n");
-    printf("  6       6             7          \n");
-    printf("  6       6            7           \n");
-    printf("  6       6           7            \n");
-    printf("   6666666           7             \n\n");
+    printf_with_delay("     6                77777777     \n");
+    printf_with_delay("    6                       7      \n");
+    printf_with_delay("   6                       7       \n");
+    printf_with_delay("  6                       7        \n");
+    printf_with_delay("   6666666               7         \n");
+    printf_with_delay("  6       6             7          \n");
+    printf_with_delay("  6       6            7           \n");
+    printf_with_delay("  6       6           7            \n");
+    printf_with_delay("   6666666           7             \n\n");
+}
+
+void printf_with_delay(const char* word)
+{
+    while (*word)
+    {
+        putchar(*word);
+        word++;
+        fflush(stdout);
+        usleep(10000);
+    }
 }

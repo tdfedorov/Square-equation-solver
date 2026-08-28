@@ -42,11 +42,9 @@ int main(int argc, char *argv[])
     else if (type_of_working == INPUT_TEST)
         run_tests();
     else
-        printf("Некорректный ввод из командной строки\n");
-    printf("Работа завершена\n");
+        printf_with_delay("Некорректный ввод из командной строки\n");
+    printf_with_delay("Работа завершена\n");
 }
-
-//getopt_long
 
 int choose_type_of_working(int number_of_terminal_args, char word[])
 {
@@ -66,11 +64,11 @@ int choose_type_of_working(int number_of_terminal_args, char word[])
 int run_not_terminal_input()
 {
     char word[MAX_SIZE_OF_WORD] = {};
-    printf("Данная программа позволяет вычислить корни уравнения второй степени.\n");
+    printf_with_delay("Данная программа позволяет вычислить корни уравнения второй степени.\n");
 
     while (true)
     {
-        printf("Если вы хотите вводить свои коэффициенты введите INTERACT, если вы хотите запустить тест введите TEST\n");
+        printf_with_delay("Если вы хотите вводить свои коэффициенты введите INTERACT, если вы хотите запустить тест введите TEST\n");
         char check = '\0';
         scanf("%99s%c", word, &check);
 
@@ -84,10 +82,9 @@ int run_not_terminal_input()
         }
         else
         {
-            printf("Вы некорректно ввели данные, выберите только одно из двух значений\n");
+            printf_with_delay("Вы некорректно ввели данные, выберите только одно из двух значений\n");
             if (check != '\n' && check != EOF)
                 clean_stdin();
         }
     }
-
 }
