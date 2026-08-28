@@ -40,6 +40,12 @@ const int AMOUNT_OF_ITERATIONS_WITH_NO_ROOTS = 100;
 /// Количество попыток генерации ненулевых чисел для функции new_rand_without_zero
 const int NUMBER_OF_ATTEMPTS = 10;
 
+/// Константа, используемая при ошибке открытия файла
+const int FILE_OPENING_ERROR = -1;
+
+/// Константа, используемая при ошибке закрытия файла
+const int FILE_CLOSING_ERROR = -1;
+
 /**
 Данная функция запускает функции run_randomized_test, run_determined_tests и run_tests_from_file и печатает общее число ошибок
 */
@@ -134,8 +140,11 @@ bool iteration_for_equation_with_no_roots();
 
 void run_tests()
 {
-    int number_of_mistakes = run_randomized_test() + run_determined_tests() + run_tests_from_file();
-    printf("Число ошибок: %d\n", number_of_mistakes);
+    int number_of_mistakes = run_randomized_test() + run_determined_tests();
+    int is_correct_file = run_tests_from_file();
+    if (is_correct_file >= 0)
+        number_of_mistakes += is_correct_file;
+    printf("Число ошибок в тестах: %d\n", number_of_mistakes);
 }
 
 int run_one_test(TEST_ARGS test)
@@ -178,22 +187,27 @@ int run_tests_from_file()
     printf("Тест из файла:\n");
     if (args != NULL)
     {
-        TEST_ARGS test = {};
-        for (int i = 0; i < 8; ++i)
+        int check = 0, number_of_args = 0;
+        while ((check = getc(args)) != EOF)
         {
-            fscanf(args, "%lf %lf %lf %d %lf %lf", &test.coefficients[0], &test.coefficients[1], &test.coefficients[2],
-            &test.number_of_roots_reference, &test.x1_reference, &test.x2_reference);
-            mistakes += run_one_test(test);
+            if (check == '\n')
+                ++number_of_args;
         }
-        fclose(args);
-
+        TEST_ARGS tests[number_of_args];
+        rewind(args);
+        for (int i = 0; i < number_of_args; ++i)
+        {
+            fscanf(args, "%lf %lf %lf %d %lf %lf", &tests[i].coefficients[0], &tests[i].coefficients[1], &tests[i].coefficients[2],
+            &tests[i].number_of_roots_reference, &tests[i].x1_reference, &tests[i].x2_reference);
+            mistakes += run_one_test(tests[i]);
+        }
+        if (fclose(args) == 0)
+            return mistakes;
+        printf(RED "Ошибка закрытия файла\n" NO_COLOR);
+        return FILE_CLOSING_ERROR;
     }
-    else
-    {
-        printf(RED "Ошибка чтения файла\n" NO_COLOR);
-        exit(EXIT_FAILURE);
-    }
-    return mistakes;
+    printf(RED "Ошибка открытия файла\n" NO_COLOR);
+    return FILE_OPENING_ERROR;
 }
 
 void print_mistake_message(TEST_ARGS test, int number_of_roots, double x1, double x2)
