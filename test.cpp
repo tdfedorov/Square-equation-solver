@@ -169,15 +169,24 @@ int run_tests_from_file()
 {
     int mistakes = 0;
     FILE *args = fopen("args.txt", "r");
-    TEST_ARGS test = {};
-    printf("Тест из файла\n");
-    for (int i = 0; i < 8; ++i)
+    printf("Тест из файла:\n");
+    if (args != NULL)
     {
-        fscanf(args, "%lf %lf %lf %d %lf %lf", &test.coefficients[0], &test.coefficients[1], &test.coefficients[2],
-        &test.number_of_roots_reference, &test.x1_reference, &test.x2_reference);
-        mistakes += run_one_test(test);
+        TEST_ARGS test = {};
+        for (int i = 0; i < 8; ++i)
+        {
+            fscanf(args, "%lf %lf %lf %d %lf %lf", &test.coefficients[0], &test.coefficients[1], &test.coefficients[2],
+            &test.number_of_roots_reference, &test.x1_reference, &test.x2_reference);
+            mistakes += run_one_test(test);
+        }
+        fclose(args);
+
     }
-    fclose(args);
+    else
+    {
+        printf(RED "Ошибка чтения файла\n" NO_COLOR);
+        exit(EXIT_FAILURE);
+    }
     return mistakes;
 }
 
