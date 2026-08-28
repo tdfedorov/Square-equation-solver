@@ -1,6 +1,7 @@
 #include "test.cpp"
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
 
 /// Максимальная длина слова
 const int MAX_SIZE_OF_WORD = 100;
@@ -10,6 +11,9 @@ const char* YES = "YES";
 
 /// Слово NO
 const char* NO = "NO";
+
+/// ДЛЯ ПАСХАЛКИ
+const int SIX_SEVEN = 67;
 
 /**
 Данная функция запускает цикл ввода коэффициентов.
@@ -51,6 +55,7 @@ bool is_run_new_input();
 */
 bool check_word(char word[], const char* word_reference);
 
+void pashalka();
 
 void run_interact()
 {
@@ -69,7 +74,7 @@ void run_interact()
 
 void make_input(double *coefficients)
 {
-    int number_of_nice_coefficients = 0;
+    int number_of_nice_coefficients = 0, number_of_attempts_to_get_pashalka = 0;
     char check = '\0';
 
     while (number_of_nice_coefficients != 4 || (check != '\n' && check != EOF)
@@ -86,6 +91,12 @@ void make_input(double *coefficients)
             printf("Некорректный ввод, повторите запрос\n");
             if (check != '\n' && check != EOF)
                 clean_stdin();
+            if (++number_of_attempts_to_get_pashalka < SIX_SEVEN)
+                printf("До пасхалки %d некорректных вводов\n", SIX_SEVEN - number_of_attempts_to_get_pashalka);
+            else if (number_of_attempts_to_get_pashalka == SIX_SEVEN)
+                pashalka();
+            else
+                printf("Вы уже видели пасхалку!\n");
         }
     }
 }
@@ -163,4 +174,17 @@ bool check_word(char word[], const char* word_reference)
     }
     else
         return false;
+}
+
+
+void pashalka()
+{
+    printf("Вы дошли до пасхалки, поздравляю!\n");
+    printf("Пасхалка через 3 секунды\n");
+    sleep(3);
+    for (int i = 0; i < SIX_SEVEN * SIX_SEVEN; ++i)
+    {
+        printf("67");
+    }
+    printf("\n");
 }

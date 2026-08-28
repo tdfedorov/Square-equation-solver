@@ -30,7 +30,6 @@ const double MAX_NEW_RAND = 1e6;
 /// Количество итераций со случайными числами для квадратного уравнения
 const int AMOUNT_OF_ITERATIONS_WITH_SQUARE_EQUATION = 100;
 
-
 /// Количество итераций со случайными числами для линейного уравнения
 const int AMOUNT_OF_ITERATIONS_WITH_LINEAR_EQUATION = 100;
 
