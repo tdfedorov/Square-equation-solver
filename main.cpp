@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
     printf("Работа завершена\n");
 }
 
+//getopt_long
+
 int choose_type_of_working(int number_of_terminal_args, char word[])
 {
     if (number_of_terminal_args != 1)

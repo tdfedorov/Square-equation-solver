@@ -277,10 +277,8 @@ int run_randomized_test()
 
 bool iteration_for_square_equation()
 {
-    TEST_ARGS test = {};
+    TEST_ARGS test = {.x1_reference = new_rand(), .x2_reference = new_rand()};
     double x1, x2 = 0.0;
-    test.x1_reference = new_rand();
-    test.x2_reference = new_rand();
     sort_roots(&test.x1_reference, &test.x2_reference);
     test.coefficients[2] = new_rand_without_zero();
     test.number_of_roots_reference = restore_coefficients(test.coefficients, test.x1_reference, test.x2_reference);
@@ -289,26 +287,22 @@ bool iteration_for_square_equation()
 
 bool iteration_for_linear_equation()
 {
-    TEST_ARGS test = {};
+    TEST_ARGS test = {.number_of_roots_reference = ONE_ROOT, .x2_reference = NAN};
     double x1, x2 = 0.0;
     test.coefficients[0] = new_rand();
     test.coefficients[1] = new_rand_without_zero();
     test.coefficients[2] = 0.0;
     test.x1_reference = (-test.coefficients[0]) / test.coefficients[1];
-    test.x2_reference = NAN;
-    test.number_of_roots_reference = ONE_ROOT;
     return check_for_equation(test, solve_equation(test.coefficients, &x1, &x2), x1, x2);
 }
 
 bool iteration_for_equation_with_no_roots()
 {
-    TEST_ARGS test = {};
+    TEST_ARGS test = {.number_of_roots_reference = NO_ROOTS, .x1_reference = NAN, .x2_reference = NAN};
     double x1, x2 = 0.0;
     test.coefficients[0] = new_rand_without_zero();
     test.coefficients[1] = 0.0;
     test.coefficients[2] = 0.0;
-    test.x1_reference = test.x2_reference = NAN;
-    test.number_of_roots_reference = NO_ROOTS;
     return check_for_equation(test, solve_equation(test.coefficients, &x1, &x2), x1, x2);
 }
 
