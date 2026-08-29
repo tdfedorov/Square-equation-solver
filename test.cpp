@@ -1,21 +1,20 @@
 #include "math.cpp"
-#include <assert.h>
 
-/// Макрос для собственного assert
+/// Макрос для собственного assert.
 #define my_assert(expression) ((expression) ? (void)0 : assert_failed(#expression, __FILE__, __LINE__))
 
-/// Макрос для отключения цветного вывода
+/// Макрос для отключения цветного вывода.
 #define NO_COLOR "\x1b[0m"
 
-/// Макрос для включения вывода с красным цветом
+/// Макрос для включения вывода с красным цветом.
 #define RED "\x1b[31m"
 
-/// Макрос для включения вывода с зеленым цветом
+/// Макрос для включения вывода с зеленым цветом.
 #define GREEN "\x1b[32m"
 
 
 /**
-Данная структура используется как аргумент в нескольких функциях с тестами
+Данная структура используется как аргумент в нескольких функциях с тестами.
 */
 struct TEST_ARGS
 {
@@ -42,7 +41,7 @@ const int AMOUNT_OF_ITERATIONS_WITH_NO_ROOTS = 100;
 /// Количество попыток генерации ненулевых чисел для функции new_rand_without_zero
 const int NUMBER_OF_ATTEMPTS = 10;
 
-/// Здесь описаны константы, используемые при наличии ошибок, связанных с файлом
+/// Здесь описаны константы, используемые при наличии ошибок, связанных с файлом.
 enum FILE_ERRORS
 {
     FILE_OPENING_ERROR = -1, ///< Константа, используемая при ошибке открытия файла
@@ -171,14 +170,14 @@ int run_determined_tests(void)
     int number_of_mistakes = 0;
     TEST_ARGS determined_tests[] =
     {
-        {{ 0, 0, 0},          INF_ROOTS,     INFINITY,   INFINITY},
-        {{ 1, 0, 0},           NO_ROOTS,          NAN,        NAN},
-        {{ 0, 1, 0},           ONE_ROOT,            0,        NAN},
-        {{ 0, 0, 1},  TWO_SIMILAR_ROOTS,            0,          0},
-        {{-1, 0, 1},          TWO_ROOTS,           -1,          1},
-        {{ 0, 1, 1},          TWO_ROOTS,           -1,          0},
-        {{ 4, 4, 1},  TWO_SIMILAR_ROOTS,           -2,         -2},
-        {{-6, 5, 1},          TWO_ROOTS,           -6,          1},
+        {{ 0, 0, 0},            INF_ROOTS,     INFINITY,   INFINITY},
+        {{ 1, 0, 0},             NO_ROOTS,          NAN,        NAN},
+        {{ 0, 1, 0},             ONE_ROOT,            0,        NAN},
+        {{ 0, 0, 1},    TWO_SIMILAR_ROOTS,            0,          0},
+        {{-1, 0, 1},            TWO_ROOTS,           -1,          1},
+        {{ 0, 1, 1},            TWO_ROOTS,           -1,          0},
+        {{ 4, 4, 1},    TWO_SIMILAR_ROOTS,           -2,         -2},
+        {{-6, 5, 1},            TWO_ROOTS,           -6,          1},
     };
     printf("Тест с определенными аргументами:\n");
     int size = sizeof(determined_tests) / sizeof(TEST_ARGS);

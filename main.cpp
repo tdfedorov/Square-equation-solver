@@ -1,4 +1,5 @@
 #include "interact.cpp"
+#include <getopt.h>
 
 /// Слово INTERACT
 const char* INTERACT = "INTERACT";
@@ -7,61 +8,41 @@ const char* INTERACT = "INTERACT";
 const char* TEST = "TEST";
 
 /**
-Здесь описаны константы для разных видов работы программы.
-*/
-enum TYPES_OF_WORKING
-{
-    INPUT_INTERACT, ///< константа для работы в режиме INTERACT
-    INPUT_TEST, ///< константа для работы в режиме TEST
-    INPUT_ERROR ///< константа, используемая при некорректном вводе из командной строки
-};
-
-/**
-Данная функция позволяет выбрать тип работы программы.
-\param number_of_terminal_args - количество аргументов командной строки
-\param word - слово из командной строки
-\return INPUT_INTERACT при вводе INTERACT, INPUT_TEST при вводе TEST, иначе INPUT_ERROR
-*/
-int choose_type_of_working(int number_of_terminal_args, char word[]);
-
-/**
 Данная функция позволяет выбрать тип работы программы не из командной строки.
-\return INPUT_INTERACT при вводе INTERACT, INPUT_TEST при вводе TEST
 */
-int run_not_terminal_input();
+void run_not_terminal_input();
 
 
 int main(int argc, char *argv[])
 {
-    int arg_index = 0;
-    if (argc != 1)
-        arg_index = 1;
-    int type_of_working = choose_type_of_working(argc, argv[arg_index]);
-    if (type_of_working == INPUT_INTERACT)
-        run_interact();
-    else if (type_of_working == INPUT_TEST)
-        run_tests();
+    option long_opts[] =
+    {
+        {"INTERACT", 0, NULL, 'I'},
+        {"TEST", 0, NULL, 'T'},
+        {NULL, 0, NULL, 0}
+    };
+    int opt = 0;
+    if ((opt = getopt_long(argc, argv, "", long_opts, NULL)) != -1)
+        switch(opt)
+        {
+            case 'I':
+                run_interact();
+                break;
+            case 'T':
+                run_tests();
+                break;
+            case '?':
+                printf_with_delay("Некорректный ввод опции из командной строки\n");
+                break;
+            default:
+                break;
+        }
     else
-        printf_with_delay("Некорректный ввод из командной строки\n");
+        run_not_terminal_input();
     printf_with_delay("Работа завершена\n");
 }
 
-int choose_type_of_working(int number_of_terminal_args, char word[])
-{
-    if (number_of_terminal_args != 1)
-    {
-        if (check_word(word, INTERACT))
-            return INPUT_INTERACT;
-        else if (check_word(word, TEST))
-            return INPUT_TEST;
-        else
-            return INPUT_ERROR;
-    }
-    else
-        return run_not_terminal_input();
-}
-
-int run_not_terminal_input()
+void run_not_terminal_input()
 {
     char word[MAX_SIZE_OF_WORD] = {};
     printf_with_delay("Данная программа позволяет вычислить корни уравнения второй степени.\n");
@@ -74,11 +55,13 @@ int run_not_terminal_input()
 
         if (check_word(word, INTERACT) && (check == '\n' || check == EOF))
         {
-            return INPUT_INTERACT;
+            run_interact();
+            break;
         }
         else if (check_word(word, TEST) && (check == '\n' || check == EOF))
         {
-            return INPUT_TEST;
+            run_tests();
+            break;
         }
         else
         {

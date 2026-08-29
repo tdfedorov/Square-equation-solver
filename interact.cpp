@@ -89,7 +89,7 @@ void make_input(double *coefficients)
     while (number_of_nice_coefficients != 4 || (check != '\n' && check != EOF)
     || !isfinite(*(coefficients + 2)) || !isfinite(*(coefficients + 1)) || !isfinite(*(coefficients + 0)))
     {
-        printf_with_delay("Введите коэффициенты квадратного уравнения через пробел.\n");
+        printf_with_delay("Введите коэффициенты квадратного уравнения через пробел (после третьего числа сразу нажмите <Enter>).\n");
         printf_with_delay("Коэффициенты должны быть целыми числами или десятичными дробями:\n");
 
         number_of_nice_coefficients = scanf("%lf %lf %lf%c",
