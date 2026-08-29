@@ -1,6 +1,9 @@
 #include "math.cpp"
 #include <assert.h>
 
+/// Макрос для собственного assert
+#define my_assert(expression) ((expression) ? (void)0 : assert_failed(#expression, __FILE__, __LINE__))
+
 /// Макрос для отключения цветного вывода
 #define NO_COLOR "\x1b[0m"
 
@@ -139,6 +142,14 @@ bool iteration_for_linear_equation();
 */
 bool iteration_for_equation_with_no_roots();
 
+/**
+Данная функция прерывает программу при невыполнении условия в my_assert
+\param expr - текст невыполненного выражения
+\param file - название файла, где произошла ошибка
+\param line - номер строки, где произошла ошибка
+*/
+void assert_failed(const char* expr, const char* file, int line);
+
 void run_tests()
 {
     int number_of_mistakes = run_randomized_test() + run_determined_tests();
@@ -160,21 +171,21 @@ int run_determined_tests(void)
     int number_of_mistakes = 0;
     TEST_ARGS determined_tests[] =
     {
-        {{0, 0, 0}, INF_ROOTS, INFINITY, INFINITY},
-        {{1, 0, 0}, NO_ROOTS, NAN, NAN},
-        {{0, 1, 0}, ONE_ROOT, 0, NAN},
-        {{0, 0, 1}, TWO_SIMILAR_ROOTS, 0, 0},
-        {{-1, 0, 1}, TWO_ROOTS, -1, 1},
-        {{0, 1, 1}, TWO_ROOTS, -1, 0},
-        {{4, 4, 1}, TWO_SIMILAR_ROOTS, -2, -2},
-        {{-6, 5, 1}, TWO_ROOTS, -6, 1},
+        {{ 0, 0, 0},          INF_ROOTS,     INFINITY,   INFINITY},
+        {{ 1, 0, 0},           NO_ROOTS,          NAN,        NAN},
+        {{ 0, 1, 0},           ONE_ROOT,            0,        NAN},
+        {{ 0, 0, 1},  TWO_SIMILAR_ROOTS,            0,          0},
+        {{-1, 0, 1},          TWO_ROOTS,           -1,          1},
+        {{ 0, 1, 1},          TWO_ROOTS,           -1,          0},
+        {{ 4, 4, 1},  TWO_SIMILAR_ROOTS,           -2,         -2},
+        {{-6, 5, 1},          TWO_ROOTS,           -6,          1},
     };
     printf("Тест с определенными аргументами:\n");
     int size = sizeof(determined_tests) / sizeof(TEST_ARGS);
 
     for (int i = 0; i < size; ++i)
     {
-        assert(0 <= i && i < size);
+        my_assert(0 <= i && i < size);
         number_of_mistakes += run_one_test(determined_tests[i]);
     }
 
@@ -220,7 +231,7 @@ int run_tests_from_file()
 
 void print_mistake_message(TEST_ARGS test, int number_of_roots, double x1, double x2)
 {
-    printf(RED "Тест не пройден: a = %lf, b = %lf, c = %lf\n",
+    printf(RED "Тест не пройден:    a = %lf, b = %lf, c = %lf\n",
                                  test.coefficients[2], test.coefficients[1], test.coefficients[0]);
 
     printf(GREEN "Требуемое значение: ");
@@ -267,7 +278,8 @@ double new_rand_without_zero(void)
         if (rand_value != 0)
             return rand_value;
     }
-    assert(false && "Превышено число попыток генерации случайных чисел");
+    my_assert(false && "Превышено число попыток генерации случайных чисел");
+    return 0;
 }
 
 bool check_for_equation(TEST_ARGS test, int number_of_roots, double x1, double x2)
@@ -348,3 +360,8 @@ bool iteration_for_equation_with_no_roots()
     return check_for_equation(test, solve_equation(test.coefficients, &x1, &x2), x1, x2);
 }
 
+void assert_failed(const char* expr, const char* file, int line)
+{
+    fprintf(stderr, "Assertion failed: %s in file %s on line %d\n", expr, file, line);
+    abort();
+}
